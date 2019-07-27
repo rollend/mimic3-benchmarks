@@ -99,7 +99,7 @@ def make_phenotype_label_matrix(phenotypes, stays=None):
     phenotypes['VALUE'] = 1
     phenotypes = phenotypes.pivot(index='ICUSTAY_ID', columns='HCUP_CCS_2015', values='VALUE')
     if stays is not None:
-        phenotypes = phenotypes.ix[stays.ICUSTAY_ID.sort_values()]
+        phenotypes = phenotypes.loc[stays.ICUSTAY_ID.sort_values()]
     return phenotypes.fillna(0).astype(int).sort_index(axis=0).sort_index(axis=1)
 
 
