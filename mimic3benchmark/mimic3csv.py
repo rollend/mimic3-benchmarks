@@ -75,10 +75,17 @@ def merge_on_subject_admission(table1, table2):
     return table1.merge(table2, how='inner', left_on=['SUBJECT_ID', 'HADM_ID'], right_on=['SUBJECT_ID', 'HADM_ID'])
 
 
+def parse_date(td):
+    resYear = float(td.days)/364.0                   # get the number of years including the the numbers after the dot
+    resYear = int(resYear)
+    return resYear
+
 def add_age_to_icustays(stays):
-    stays['AGE'] = (stays.INTIME - stays.DOB).apply(lambda s: s / np.timedelta64(1, 's')) / 60./60/24/365
+
+    stays['AGE'] = [parse_date(end-start) for start, end in zip(pd.to_datetime(stays.DOB).dt.date,  pd.to_datetime(stays.INTIME).dt.date)]
     stays.ix[stays.AGE < 0, 'AGE'] = 90
     return stays
+
 
 
 def add_inhospital_mortality_to_icustays(stays):
